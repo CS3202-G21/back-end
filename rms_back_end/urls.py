@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', include('rooms.urls')),
+    path('', include('room_types.urls')),
     path('', include('restaurants.urls')),
     path('', include('menu_items.urls')),
     path('', include('special_offers.urls')),
