@@ -73,14 +73,16 @@ class GetTodayTableReservationsViewSet(generics.GenericAPIView):
 
         breakfast_begin, breakfast_end, lunch_begin, lunch_end, dinner_begin, dinner_end = current_times
 
-        if breakfast_begin <= time_now <= breakfast_end:
-            table_reservations_objs = TableReservation.objects.filter(reserved_date=today, meal_time=meal_times[0][0], restaurant=restaurant)
-        elif lunch_begin <= time_now <= lunch_end:
-            table_reservations_objs = TableReservation.objects.filter(reserved_date=today, meal_time=meal_times[1][0], restaurant=restaurant)
-        elif dinner_begin <= time_now <= dinner_end:
-            table_reservations_objs = TableReservation.objects.filter(reserved_date=today, meal_time=meal_times[2][0], restaurant=restaurant)
-        else:
-            raise serializers.ValidationError("No Meal Provided at this Time.")
+        # if breakfast_begin <= time_now <= breakfast_end:
+        #     table_reservations_objs = TableReservation.objects.filter(reserved_date=today, meal_time=meal_times[0][0], restaurant=restaurant)
+        # elif lunch_begin <= time_now <= lunch_end:
+        #     table_reservations_objs = TableReservation.objects.filter(reserved_date=today, meal_time=meal_times[1][0], restaurant=restaurant)
+        # elif dinner_begin <= time_now <= dinner_end:
+        #     table_reservations_objs = TableReservation.objects.filter(reserved_date=today, meal_time=meal_times[2][0], restaurant=restaurant)
+        # else:
+        #     raise serializers.ValidationError("No Meal Provided at this Time.")
+
+        table_reservations_objs = TableReservation.objects.filter(reserved_date=today, restaurant=restaurant)
         table_reservations = []
 
         for obj in table_reservations_objs:
