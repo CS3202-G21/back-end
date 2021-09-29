@@ -59,23 +59,21 @@ class GetCustomerOrdersViewSet(generics.GenericAPIView):
         if not (is_staff(request.user, 3) or is_staff(request.user, 1)):
             raise serializers.ValidationError("Access Denied: You are not a waiter or a chef")
 
-        restaurant = request.data['restaurant']
+        # restaurant = request.data['restaurant']
 
         today = datetime.now()
         time_now = today.time()
         breakfast_begin, breakfast_end, lunch_begin, lunch_end, dinner_begin, dinner_end = current_times
 
-
-
         if breakfast_begin <= time_now <= breakfast_end:
             order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=6, minute=0, second=0),
-                                                      date_created__lt=today.replace(hour=10, minute=30, second=0), restaurant=restaurant)
+                                                      date_created__lt=today.replace(hour=10, minute=30, second=0))
         elif lunch_begin <= time_now <= lunch_end:
             order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=12, minute=0, second=0),
-                                                      date_created__lt=today.replace(hour=15, minute=30, second=0), restaurant=restaurant)
+                                                      date_created__lt=today.replace(hour=15, minute=30, second=0))
         elif dinner_begin <= time_now <= dinner_end:
             order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=19, minute=30, second=0),
-                                                      date_created__lt=today.replace(hour=22, minute=30, second=0), restaurant=restaurant)
+                                                      date_created__lt=today.replace(hour=22, minute=30, second=0))
         else:
             raise serializers.ValidationError("No Meal Provided at this Time.")
 
