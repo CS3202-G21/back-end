@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
 
 # Login Staff Serializer
