@@ -29,7 +29,5 @@ class Restaurant(models.Model):
     photo_3 = models.ImageField(upload_to='photos/restaurants/other', blank=True)
     date_added = models.DateTimeField(default=datetime.now, blank=True)
 
-    manager_id = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True)
-
     def __str__(self):
         return str(self.title)
