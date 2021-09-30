@@ -28,13 +28,16 @@ class CustomerOrderViewSet(generics.GenericAPIView):
         return Response({"orders": orders})
 
     def post(self, request, *args, **kwargs):
-        if not is_staff(request.user, 4):
+        if not is_staff(request.user, "Virtual Waiter"):
             raise serializers.ValidationError("Access Denied: You are not a virtual waiter")
 
         data = request.data
         data['customer'] = User.objects.filter(username=data['customer'])[0].id
 
-        data['id'] = CustomerOrder.objects.order_by('-id')[0].id + 1
+        try:
+            data['id'] = CustomerOrder.objects.order_by('-id')[0].id + 1
+        except IndexError:
+            data['id'] = 1
 
         data['menu_items'] = json.dumps(data['menu_items'])
         data['special_offers'] = json.dumps(data['special_offers'])
@@ -56,7 +59,7 @@ class GetCustomerOrdersViewSet(generics.GenericAPIView):
     serializer_class = CustomerOrderSerializer
 
     def get(self, request):
-        if not (is_staff(request.user, 3) or is_staff(request.user, 1)):
+        if not (is_staff(request.user, "Waiter") or is_staff(request.user, "Chef")):
             raise serializers.ValidationError("Access Denied: You are not a waiter or a chef")
 
         # restaurant = request.data['restaurant']
@@ -98,14 +101,14 @@ class CustomerOrderUpdateViewSet(generics.GenericAPIView):
         except CustomerOrder.DoesNotExist:
             raise serializers.ValidationError("Invalid Access")
 
-        if is_staff(request.user, 3):
+        if is_staff(request.user, "Waiter"):
             if order_status == order_statuses[3][0]:
                 order.status = order_statuses[4][0]
             elif order_status == order_statuses[4][0]:
                 order.status = order_statuses[5][0]
             else:
                 raise serializers.ValidationError("Waiters cannot update order status at " + order_status + " state.")
-        elif is_staff(request.user, 1):
+        elif is_staff(request.user, "Chef"):
             if order_status == order_statuses[0][0]:
                 order.status = order_statuses[1][0]
             elif order_status == order_statuses[1][0]:
@@ -142,7 +145,7 @@ class CustomerOrderPaymentSuccessViewSet(generics.GenericAPIView):
         except CustomerOrder.DoesNotExist:
             raise serializers.ValidationError("Invalid Access")
 
-        if is_staff(request.user, 4):
+        if is_staff(request.user, "Virtual Waiter"):
             if order_status == order_statuses[5][0]:
                 order.status = order_statuses[6][0]
             else:
@@ -167,7 +170,7 @@ class AddOrderReviewViewSet(generics.GenericAPIView):
     serializer_class = CustomerOrderSerializer
 
     def post(self, request, *args, **kwargs):
-        if not is_staff(request.user, 4):
+        if not is_staff(request.user, "Virtual Waiter"):
             raise serializers.ValidationError("Access Denied: You are not a virtual waiter")
 
         data = request.data

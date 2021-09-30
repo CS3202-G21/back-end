@@ -31,7 +31,7 @@ class RoomReservationViewSet(generics.GenericAPIView):
 
         if is_customer(request.user):
             data['customer'] = request.user.id
-        elif is_staff(request.user, 2):
+        elif is_staff(request.user, "Receptionist"):
             data['customer'] = User.objects.get(username=data['customer']).id
         else:
             raise serializers.ValidationError("Access Denied: You are not a customer or a receptionist.")
@@ -58,7 +58,7 @@ class GetTodayRoomReservationsViewSet(generics.GenericAPIView):
     serializer_class = RoomReservationSerializer
 
     def get(self, request):
-        if not is_staff(request.user, 2):
+        if not is_staff(request.user, "Receptionist"):
             raise serializers.ValidationError("Access Denied: You are not a receptionist")
 
         today = datetime.now().date()
@@ -84,7 +84,7 @@ class RoomReservationSuccessViewSet(generics.GenericAPIView):
 
         if is_customer(request.user):
             data['customer'] = request.user.id
-        elif is_staff(request.user, 2):
+        elif is_staff(request.user, "Receptionist"):
             data['customer'] = User.objects.get(username=data['customer']).id
         else:
             raise serializers.ValidationError("Access Denied: You are not a customer or a receptionist.")
@@ -113,7 +113,7 @@ class RoomCheckInViewSet(generics.GenericAPIView):
     serializer_class = RoomReservationSerializer
 
     def post(self, request, *args, **kwargs):
-        if not is_staff(request.user, 2):
+        if not is_staff(request.user, "Receptionist"):
             raise serializers.ValidationError("Access Denied: You are not a receptionist")
 
         data = request.data
@@ -141,7 +141,7 @@ class RoomCheckOutViewSet(generics.GenericAPIView):
     serializer_class = RoomReservationSerializer
 
     def post(self, request, *args, **kwargs):
-        if not is_staff(request.user, 2):
+        if not is_staff(request.user, "Receptionist"):
             raise serializers.ValidationError("Access Denied: You are not a receptionist")
 
         data = request.data

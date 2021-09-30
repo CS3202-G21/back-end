@@ -51,7 +51,7 @@ class TableReservationViewSet(generics.GenericAPIView):
         table_reservation = serializer.save()
 
         return Response({
-            "room_reservation": TableReservationSerializer(table_reservation, context=self.get_serializer_context()).data
+            "table_reservation": TableReservationSerializer(table_reservation, context=self.get_serializer_context()).data
         })
 
 
@@ -63,7 +63,7 @@ class GetTodayTableReservationsViewSet(generics.GenericAPIView):
     serializer_class = TableReservationSerializer
 
     def get(self, request):
-        if not is_staff(request.user, 3):
+        if not is_staff(request.user, "Waiter"):
             raise serializers.ValidationError("Access Denied: You are not a waiter")
 
         restaurant = request.data['restaurant']
@@ -101,7 +101,7 @@ class TableReservationArrivalViewSet(generics.GenericAPIView):
     serializer_class = TableReservationSerializer
 
     def post(self, request, *args, **kwargs):
-        if not is_staff(request.user, 3):
+        if not is_staff(request.user, "Waiter"):
             raise serializers.ValidationError("Access Denied: You are not a waiter")
 
         data = request.data
@@ -119,7 +119,7 @@ class TableReservationArrivalViewSet(generics.GenericAPIView):
             raise serializers.ValidationError("Today is not the Reserved Date.")
 
         return Response({
-            "room_reservation": TableReservationSerializer(reservation, context=self.get_serializer_context()).data
+            "table_reservation": TableReservationSerializer(reservation, context=self.get_serializer_context()).data
         })
 
 
