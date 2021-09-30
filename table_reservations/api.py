@@ -66,7 +66,7 @@ class GetTodayTableReservationsViewSet(generics.GenericAPIView):
         if not is_staff(request.user, "Waiter"):
             raise serializers.ValidationError("Access Denied: You are not a waiter")
 
-        restaurant = request.data['restaurant']
+        # restaurant = request.data['restaurant']
 
         today = datetime.now().date()
         time_now = datetime.now().time()
@@ -82,7 +82,7 @@ class GetTodayTableReservationsViewSet(generics.GenericAPIView):
         # else:
         #     raise serializers.ValidationError("No Meal Provided at this Time.")
 
-        table_reservations_objs = TableReservation.objects.filter(reserved_date=today, restaurant=restaurant)
+        table_reservations_objs = TableReservation.objects.filter(reserved_date=today)
         table_reservations = []
 
         for obj in table_reservations_objs:
@@ -108,7 +108,7 @@ class TableReservationArrivalViewSet(generics.GenericAPIView):
         reservation_id = data['reservation_id']
 
         try:
-            reservation = TableReservation.objects.get(id=reservation_id, customer=request.user.id)
+            reservation = TableReservation.objects.get(id=reservation_id)
         except TableReservation.DoesNotExist:
             raise serializers.ValidationError("Invalid Access")
 
