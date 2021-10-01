@@ -75,7 +75,7 @@ class GetCustomerOrdersViewSet(generics.GenericAPIView):
             order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=12, minute=0, second=0),
                                                       date_created__lt=today.replace(hour=15, minute=30, second=0))
         elif dinner_begin <= time_now <= dinner_end:
-            order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=19, minute=30, second=0),
+            order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=16, minute=30, second=0),
                                                       date_created__lt=today.replace(hour=22, minute=30, second=0))
         else:
             raise serializers.ValidationError("No Meal Provided at this Time.")
@@ -192,6 +192,19 @@ class AddOrderReviewViewSet(generics.GenericAPIView):
         return Response({
             "order": CustomerOrderSerializer(order, context=self.get_serializer_context()).data
         })
+
+
+# View Set to get the reviews
+class GetOrderReviewsViewSet(generics.GenericAPIView):
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = CustomerOrderSerializer
+
+    def get(self, request):
+        reviews = CustomerOrder.objects.exclude(customer_review="").values('customer', 'restaurant', 'customer_review')
+
+        return Response({"reviews": reviews})
 
 
 def get_order_list(obj_list):
