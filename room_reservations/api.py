@@ -72,6 +72,19 @@ class GetTodayRoomReservationsViewSet(generics.GenericAPIView):
         return Response({"check_in_reservations": check_in_reservations, "check_out_reservations": check_out_reservations})
 
 
+# View Set to get the reviews
+class GetRoomReviewsViewSet(generics.GenericAPIView):
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = RoomReservationSerializer
+
+    def get(self, request):
+        reviews = RoomReservation.objects.exclude(customer_review="").values('customer', 'room_id', 'customer_review')
+
+        return Response({"reviews": reviews})
+
+
 # View Set to update payment success
 class RoomReservationSuccessViewSet(generics.GenericAPIView):
     permission_classes = [

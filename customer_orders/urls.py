@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .api import CustomerOrderViewSet, CustomerOrderUpdateViewSet, CustomerOrderPaymentSuccessViewSet, GetCustomerOrdersViewSet, AddOrderReviewViewSet
+from .api import CustomerOrderViewSet, CustomerOrderUpdateViewSet, CustomerOrderPaymentSuccessViewSet, GetCustomerOrdersViewSet, AddOrderReviewViewSet, GetOrderReviewsViewSet
 
 
 urlpatterns = [
@@ -8,4 +8,5 @@ urlpatterns = [
     path('api/order/payment_success', CustomerOrderPaymentSuccessViewSet.as_view()),
     path('api/order/get_orders', GetCustomerOrdersViewSet.as_view()),
     path('api/order/add_review', AddOrderReviewViewSet.as_view()),
+    path('api/order/get_reviews', GetOrderReviewsViewSet.as_view()),
 ]
