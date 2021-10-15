@@ -41,6 +41,13 @@ class TableReservationTests(TestCase):
         response = client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def Test_get_table_reservations(self, token):
+        url = '/api/table_reservations'
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_table_reservation_process(self):
         customer_data = {
@@ -67,6 +74,9 @@ class TableReservationTests(TestCase):
         self.Test_view_table_reservations(waiter_token)
 
         self.Test_update_customer_arrival(waiter_token, reservation_id)
+
+        self.Test_get_table_reservations(customer_token)
+
 
     def register_user(self, data, url):
         client = Client()

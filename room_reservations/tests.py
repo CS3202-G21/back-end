@@ -54,6 +54,33 @@ class RoomReservationTests(TestCase):
         response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def Test_get_room_reservations(self, token):
+        url = '/api/room_reservations'
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def Test_add_review(self, token, reservation_id):
+        url = '/api/room_reservations/add_review'
+        data = {
+            "reservation_id": reservation_id,
+            "customer_review": "Lorem Ipsum"
+        }
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def Test_view_room_reservations(self, token):
+        url = '/api/room_reservations/today_reservations'
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_room_reservation_process(self):
         customer_data = {
@@ -77,9 +104,15 @@ class RoomReservationTests(TestCase):
 
         reservation_id = self.Test_create_room_reservation(customer_token)
 
+        self.Test_view_room_reservations(receptionist_token)
+
         self.Test_chek_in(receptionist_token, reservation_id)
 
         self.Test_payment_success(customer_token, reservation_id)
+
+        self.Test_add_review(customer_token, reservation_id)
+
+        self.Test_get_room_reservations(customer_token)
 
     def register_user(self, data, url):
         client = Client()
