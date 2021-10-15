@@ -18,3 +18,17 @@ class RoomsTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         return json.loads(response.content.decode("utf-8"))["id"]
+
+    def test_get_rooms(self):
+        id = self.Test_create_room()
+
+        url = '/api/rooms/'+str(id)+'/'
+
+        client = Client()
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8"))["id"], id)
+
+        url = '/api/rooms/'
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

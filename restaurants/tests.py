@@ -28,15 +28,19 @@ class RestaurantsTests(TestCase):
 
         return json.loads(response.content.decode("utf-8"))["id"]
 
+    def test_get_restaurants(self):
+        id = self.Test_create_restaurant()
 
-    # def test_get_restaurants(self):
-    #     url = '/api/restaurants'
-    #
-    #     client = Client()
-    #     response = client.get(url)
-    #     print(response.content)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+        url = '/api/restaurants/' + str(id) + '/'
 
+        client = Client()
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8"))["id"], id)
+
+        url = '/api/restaurants/'
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def temporary_image(self):
         bts = BytesIO()

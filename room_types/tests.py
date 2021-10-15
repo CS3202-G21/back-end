@@ -25,6 +25,21 @@ class RoomTypesTests(TestCase):
 
         return json.loads(response.content.decode("utf-8"))["id"]
 
+    def test_get_room_types(self):
+        id = self.Test_create_room_type()
+
+        url = '/api/room_types/'+str(id)+'/'
+
+        client = Client()
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8"))["id"], id)
+
+        url = '/api/room_types/'
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
 
     def temporary_image(self):
         bts = BytesIO()
