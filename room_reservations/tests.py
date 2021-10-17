@@ -32,7 +32,7 @@ class RoomReservationTests(TestCase):
         response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def Test_chek_out(self, token, reservation_id):
+    def Test_invalid_chek_in(self, token, reservation_id):
         url = '/api/room_reservations/check_in'
         data = {
             "reservation_id": reservation_id
@@ -41,7 +41,29 @@ class RoomReservationTests(TestCase):
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def Test_chek_out(self, token, reservation_id):
+        url = '/api/room_reservations/check_out'
+        data = {
+            "reservation_id": reservation_id
+        }
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def Test_invalid_chek_out(self, token, reservation_id):
+        url = '/api/room_reservations/check_out'
+        data = {
+            "reservation_id": reservation_id
+        }
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def Test_payment_success(self, token, reservation_id):
         url = '/api/room_reservations/payment_success'
@@ -53,6 +75,17 @@ class RoomReservationTests(TestCase):
         client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def Test_invalid_payment_success(self, token, reservation_id):
+        url = '/api/room_reservations/payment_success'
+        data = {
+            "reservation_id": reservation_id
+        }
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def Test_get_room_reservations(self, token):
         url = '/api/room_reservations'
@@ -73,6 +106,18 @@ class RoomReservationTests(TestCase):
         client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def Test_invalid_add_review(self, token, reservation_id):
+        url = '/api/room_reservations/add_review'
+        data = {
+            "reservation_id": reservation_id,
+            "customer_review": "Lorem Ipsum"
+        }
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def Test_view_room_reservations(self, token):
         url = '/api/room_reservations/today_reservations'
@@ -110,9 +155,17 @@ class RoomReservationTests(TestCase):
 
         self.Test_payment_success(customer_token, reservation_id)
 
+        self.Test_chek_out(receptionist_token, reservation_id)
+
         self.Test_add_review(customer_token, reservation_id)
 
         self.Test_get_room_reservations(customer_token)
+
+        # invalid data testing
+        self.Test_invalid_chek_in(receptionist_token, reservation_id + 1)
+        self.Test_invalid_chek_out(receptionist_token, reservation_id + 1)
+        self.Test_invalid_payment_success(customer_token, reservation_id + 1)
+        self.Test_invalid_add_review(customer_token, reservation_id + 1)
 
     def register_user(self, data, url):
         client = Client()

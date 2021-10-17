@@ -33,6 +33,17 @@ class TableReservationTests(TestCase):
         response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def Test_invalid_update_customer_arrival(self, token, reservation_id):
+        url = '/api/table_reservations/arrival'
+        data = {
+            "reservation_id": reservation_id
+        }
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def Test_view_table_reservations(self, token):
         url = '/api/table_reservations/today_reservations'
 
@@ -77,6 +88,8 @@ class TableReservationTests(TestCase):
 
         self.Test_get_table_reservations(customer_token)
 
+        # invalid data testing
+        self.Test_invalid_update_customer_arrival(waiter_token, reservation_id + 1)
 
     def register_user(self, data, url):
         client = Client()

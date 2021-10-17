@@ -34,6 +34,17 @@ class CustomerOrderTests(TestCase):
         response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def Test_invalid_order_update(self, token, order_id):
+        url = '/api/order/update'
+        data = {
+            "order_id": order_id
+        }
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def Test_payment_success(self, token, order_id):
         url = '/api/order/payment_success'
         data = {
@@ -44,6 +55,17 @@ class CustomerOrderTests(TestCase):
         client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def Test_invalid_payment_success(self, token, order_id):
+        url = '/api/order/payment_success'
+        data = {
+            "order_id": order_id
+        }
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def Test_get_customer_orders(self, token):
         url = '/api/order'
@@ -65,6 +87,19 @@ class CustomerOrderTests(TestCase):
         client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def Test_invalid_add_review(self, token, order_id):
+        url = '/api/order/add_review'
+        data = {
+            "order_id": order_id,
+            "customer": "johndoe",
+            "customer_review": "Lorem Ipsum"
+        }
+
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        response = client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
     def test_order_process(self):
@@ -113,15 +148,24 @@ class CustomerOrderTests(TestCase):
         self.Test_order_update(chef_token, order_id)
         self.Test_order_update(chef_token, order_id)
 
+        # invalid data testing
+        self.Test_invalid_order_update(chef_token, order_id)
+        self.Test_invalid_order_update(chef_token, order_id + 1)
+
+        # valid data testing
         self.Test_order_update(waiter_token, order_id)
         self.Test_order_update(waiter_token, order_id)
 
+        # invalid data testing
+        self.Test_invalid_order_update(waiter_token, order_id)
+        self.Test_invalid_order_update(waiter_token, order_id + 1)
+        self.Test_invalid_payment_success(virtual_waiter_token, order_id + 1)
+        self.Test_invalid_add_review(virtual_waiter_token, order_id + 1)
+
+        # valid data testing
         self.Test_payment_success(virtual_waiter_token, order_id)
-
         self.Test_add_review(virtual_waiter_token, order_id)
-
         self.Test_get_customer_orders(customer_token)
-
 
     def register_user(self, data, url):
         client = Client()
