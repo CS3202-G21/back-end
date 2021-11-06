@@ -75,7 +75,7 @@ class GetCustomerOrdersViewSet(generics.GenericAPIView):
             order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=12, minute=0, second=0),
                                                       date_created__lt=today.replace(hour=15, minute=30, second=0))
         elif dinner_begin <= time_now <= dinner_end:
-            order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=19, minute=30, second=0),
+            order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=17, minute=30, second=0),
                                                       date_created__lt=today.replace(hour=23, minute=59, second=0))
         else:
             raise serializers.ValidationError("No Meal Provided at this Time.")
