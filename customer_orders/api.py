@@ -70,10 +70,10 @@ class GetCustomerOrdersViewSet(generics.GenericAPIView):
 
         if breakfast_begin <= time_now <= breakfast_end:
             order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=0, minute=1, second=0),
-                                                      date_created__lt=today.replace(hour=10, minute=30, second=0))
+                                                      date_created__lt=today.replace(hour=13, minute=0, second=0))
         elif lunch_begin <= time_now <= lunch_end:
-            order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=12, minute=0, second=0),
-                                                      date_created__lt=today.replace(hour=15, minute=30, second=0))
+            order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=13, minute=0, second=0),
+                                                      date_created__lt=today.replace(hour=17, minute=30, second=0))
         elif dinner_begin <= time_now <= dinner_end:
             order_objs = CustomerOrder.objects.filter(date_created__gt=today.replace(hour=17, minute=30, second=0),
                                                       date_created__lt=today.replace(hour=23, minute=59, second=0))
