@@ -11,10 +11,10 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
 
-class CustomerDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomerDetails
-        fields = ('contact_no', 'profile_picture')
+# class CustomerDetailsSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CustomerDetails
+#         fields = ('contact_no', 'profile_picture')
 
 
 # Register Customer Serializer
