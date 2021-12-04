@@ -6,27 +6,44 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [main]
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-      -
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v1 
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
           username: windysl
           password: 19970317winindee
-      -
-        name: Build and push
+      - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: windysl/django_backend:latest
+
+      - name: Deploy to Digital Ocean droplet via SSH action
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          HOST: 178.128.121.215
+          USERNAME: root
+          KEY: ${{ secrets.SSHKEY }}
+          script: |
+            # Stop running container
+            docker stop django
+
+            # Remove old containers % Images
+            docker rm -vf $(docker ps -a -q)
+            docker rmi -f $(docker images -a -q)
+
+            #pull image
+            docker pull windysl/django_backend   
+
+            # Run a new container from a new image
+            docker run --name django -p 8000:8000 windysl/django_backend
+            timeout-minutes: 1

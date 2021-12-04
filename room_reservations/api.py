@@ -37,9 +37,10 @@ class RoomReservationViewSet(generics.GenericAPIView):
             raise serializers.ValidationError("Access Denied: You are not a customer or a receptionist.")
 
         data['total_price'], start_date, end_date = get_total_price(data)
-        # datetime.now().date() > start_date or
+
         if start_date >= end_date:
             raise serializers.ValidationError("Given Dates are not Valid")
+
         if are_dates_booked(start_date, end_date, data['room']):
             raise serializers.ValidationError("Given Dates are Booked")
 
