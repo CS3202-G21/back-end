@@ -38,8 +38,9 @@ class RoomReservationViewSet(generics.GenericAPIView):
 
         data['total_price'], start_date, end_date = get_total_price(data)
 
-        # if datetime.now().date() > start_date or start_date >= end_date:
-        #     raise serializers.ValidationError("Given Dates are not Valid")
+        if start_date >= end_date:
+            raise serializers.ValidationError("Given Dates are not Valid")
+
         if are_dates_booked(start_date, end_date, data['room']):
             raise serializers.ValidationError("Given Dates are Booked")
 

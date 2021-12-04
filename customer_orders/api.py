@@ -178,7 +178,7 @@ class AddOrderReviewViewSet(generics.GenericAPIView):
 
         order_id = data['order_id']
 
-        print(data['customer'])
+        # print(data['customer'])
 
         try:
             order = CustomerOrder.objects.get(id=order_id, customer=data['customer'])

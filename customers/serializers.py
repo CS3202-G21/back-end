@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from. models import CustomerDetails
 
 
 # Customer Serializer
@@ -8,6 +9,12 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name')
+
+
+# class CustomerDetailsSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CustomerDetails
+#         fields = ('contact_no', 'profile_picture')
 
 
 # Register Customer Serializer
